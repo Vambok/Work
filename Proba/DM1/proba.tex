@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{DM Proba}
+\author{vambok }
+\date{November 2017}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Exercice 1}
+\subsection{}
+$1-\frac{1}{2^3} = \frac{7}{8}$
+\subsection{}
+$n\times \frac{7}{8}$
+\subsection{}
+$0 \rightarrow n'$\\
+$nombre de clause \rightarrow n$\\
+affecte aléatoirement les xi\\
+répète :\\
+\begin{tabular}{lp{1cm}}
+& modifie la valeur d'un xi0 choisi au hasard\\
+& nombre de clauses satisfaites \rightarrow m\\
+& si $m<n'$ : modifie v sinon (si $m/n\geq\frac{7}{8}$ : return affectation sinon $m \rightarrow n'$)\\
+\end{tabular}
+\subsection{}
+4) il satisfait $\frac{7n}{8}$ clauses, $nopt\leqn$ \Rightarrow $\frac{7n}{8}\geq\frac{7nopt}{8}$ donc $alpha=\frac{7}{8}$
+\subsection{}
+5) le même algorithme s'arrêtant pour $m/n\geq1-\frac{1}{2^k}$ satisfait au minimum $n\times (1-\frac{1}{2^k})$ clauses donc au moins $nopt\times (1-\frac{1}{2^k})$ clauses et est donc une $(1-\frac{1}{2^k})$-approximation.
+
+\section{Exercice 2}
+\subsection{}
+1) - Si $Sj \geq 1$ alors $\exists i tq (($vi=1$ ET xi appartient à Cj) OU ($vi=0$ ET non-xi appartient à Cj))$. Donc Cj est vraie car xi (resp. non-xi) est vrai.
+- Inversement, Cj est vraie \Rightarrow \exists xi vrai (resp faux) tel que xi (resp non-xi) appartient à Cj. Donc vi (resp 1-vi) = 1 et fait partie de la somme de positifs Sj donc $Sj \geq 1$.
+\subsection{}
+2) - Max-sat consiste en la maximisation du nombre de clauses vraies, c'est équivalent à maximiser le nombre de j tels que $Sj\geq1$ (car on a vu au 1. que $Sj\geq1$ \Leftrightarrow Cj vraie), si on pose $Sj\geqzj$ cela revient à maximiser le nombre de j tels que $zj=1$, ce qui revient à maximiser la somme des zj car zj appartient à {0,1}.
+- Cette suite d'équivalences prouve que Max-sat \Leftrightarrow maximisation de \sum(zj) où $Sj\geqzj$.
+\subsection{}
+3) pour tout j on a $Sj\geqzj*$. Comme zj* est optimal et compris entre 0 et 1 on a $zj=Sj$ si $Sj<1$ et $zj=1$ sinon.
+Donc $\sum(zj*)=\sum(Sj)[Sj<1]+\sum(1)[Sj\geq1] \geq \sum(1)[Sj\geq1]$ = nombre de j tels que $Sj\geq1$ pour une affectation optimale = nombre max de clauses satisfiables. \sum(zj*) \geq nombre max de clauses satisfiables.
+\subsection{}
+4) On peut choisir que pour tout i (resp. j) : vi (resp. zj) = 1 avec une probabilité vi* (resp. zj*), 0 sinon.
+\subsection{}
+5) On note li chaque littéral de Cj.
+Or, l'arrondi proposé est tel que pour tout li on a : proba(li vrai) = {- vi* si xi appartient à Cj
+- 1-vi* sinon
+car vi* = proba(vi=1).
+On a également la somme pour une affectation optimale : Sj*=\sum(vi*)[xi in Cj]+\sum(1-vi*)[non-xi in Cj] ce qui correspond à l'espérance du nombre de li vrais.
+Or proba(li vrai) = espérance du nombre de li vrais / nombre de li dans Cj, donc pour une clause contenant k littéraux on a pour tout li de Cj : proba(li vrai) = Sj*/k.
+Comme Sj*\geqzj* (contrainte sur zj*) on a proba(li vrai) \geq zj*/k
+Cj est satisfaite si au moins un des li est vrai \Rightarrow proba(Cj satisfaite) = 1 - proba(tous les li sont faux) = 1 - proba(li faux)^k = 1 - (1 - proba(li vrai))^k
+Comme on a proba(li vrai) \geq zj*/k on a
+on a		(1 - proba(li vrai))^k	\leq (1 - zj*/k)^k
+donc	    1 - (1 - proba(li vrai))^k	\geq 1 - (1 - zj*/k)^k
+et		  proba(Cj satisfaite)	\geq 1 - (1 - zj*/k)^k
+zj* appartient à [0,1] donc 1 - (1 - zj*/k)^k \geq bk\times zj* \geq bk\times zj
+d'où proba(Cj satisfaite) \geq bk\times zj*
+\subsection{}
+6) e(x)\geq1+x donc e(-1/k) \geq 1-1/k donc e(-1) \geq (1-1/k)^k donc 1-1/e \leq 1-(1-1/k)^k
+\subsection{}
+7) Comme il existe un algorithme résolvant le problème de la question 2 en temps polynomial (optimisation linéaire) il suffit d'appliquer notre arrondi aux sorties de cet algorithme pour obtenir un algorithme pour Max-sat en temps polynomial.
+Comme une clause de k' littéraux est satisfaite par notre algorithme avec une probabilité \geq bk'\times zj*, et que pour tout k' bk'\times zj*\geq(1-1/e)\times zj* on a pour toute clause proba(Cj satisfaite) \geq (1-1/e)\times zj*. Le nombre de clauses satisfaites par notre algorithme est donc \geq \sum((1-1/e)\times zj*) = (1-1/e)\times \sum(zj*) = (1-1/e)\times nopt = a\times nopt où a = (1-1/e) et l'algorithme est donc une (1-1/e)-approximation.
+\subsection{}
+8) Pour Max-k-sat on a pour chaque clause une probabilité \geq bk\times zj* où k est constant pour chaque clause, donc le nombre de clauses satisfaites par l'algorithme est \geq \sum(bk\times zj*) = bk\times \sum(zj*) = bk\times nopt = a\times nopt où a = bk et l'algorithme est donc une bk-approximation.
+
+\section{Exercice 3}
+\subsection{}
+1) pour 1 : algo ex1 est une 1/2-approx	algo ex2 est une 1-approx
+pour 2 : algo ex1 est une 3/4-approx	algo ex2 est une (3/4)-approx
+pour 3 : algo ex1 est une 7/8-approx	algo ex2 est une (19/27)-approx
+pour 4 : algo ex1 est une 15/16-approx	algo ex2 est une (175/256)-approx
+pour 5 : algo ex1 est une 31/32-approx	algo ex2 est une (2101/3125)-approx
+les algorithmes sont tous les deux une (3/4)-approx pour k=2
+\subsection{}
+2) A la question 5 de l'exercice 1 on a trouvé que pour Sk l'algo 1 renvoyait une affectation à au moins n*(1-1/2^k) clauses vraies donc le nombre de clauses satisfaites par cet algorithme pour max-sat est \geq \sum(n*(1-1/2^k))[k] = \sum(\sum(1-1/2^k)[Cj in Sk])[k]
+\subsection{}
+3) A la question 8 de l'exercice 2 on a trouvé que pour Sk l'algo 2 renvoyait une affectation telle que chaque clause a une probabilité \geq bk\times zj* d'être vraie, donc l'espérance du nombre de clauses vraies dans Sk est \sum(bk\times zj*)[Cj in Sk] et l'espérance du nombre total de clauses vraies est \sum(\sum(bk\times zj*)[Cj in Sk])[k]
+\subsection{}
+4) 1-2^-k+bk \geq 2-2^-k-1/e = 2^-k \leq 1/2-1/e
+2-1/2^k-(1-1/k)^k
+\subsection{}
+\subsection{}
+\subsection{}
+
+\end{document}
+
