@@ -13,15 +13,14 @@ Cree par Severine Berard, modifie par Peter-Mikhael Richard
 #include "Arbre.cpp"
 using namespace std;
 
-/*
 // NAIF
-void naif(string P, int m, string T, int n)
-{
-int j,occurences=0,steps=0;
+void naif(string P, int m, string T, int n){
+	int j,occurences=0,steps=0;
+
 	for(int i=0;i<n-m+1;i++){
 		for(j=0;j<m;j++){
 			steps++;
-			if(T[i+j+1]!=P[j+1]){
+			if(T[i+j]!=P[j]){
 				break;
 			}
 		}
@@ -29,32 +28,33 @@ int j,occurences=0,steps=0;
 			occurences++;
 		}
 	}
+
 	cout<<"J'ai trouve "<<occurences<<" occurences de P dans T en "<<steps<<" etapes."<<endl;
 }
 
 // MP
-int * calcule_MP_next(string P, int m)
-{
-int* MP_next=new int[m+1];
-int j=-1;
+int * calcule_MP_next(string P, int m){
+	int* MP_next=new int[m+1];
+	int j=-1;
+
 	MP_next[0]=-1;
 	for(int i=0;i<m;i++){
-		while((j>=0)&&(P[i+1]!=P[j+1])){
+		while((j>=0)&&(P[i]!=P[j])){
 			j=MP_next[j];
 		}
 		j++;
 		MP_next[i+1]=j;
 	}
-return MP_next;
+	return MP_next;
 }
 
-void MP(string P, int m, string T, int n, int* MP_next)
-{
-int j=0,steps=0,occurences=0;
+void MP(string P, int m, string T, int n, int* MP_next){
+	int j=0,steps=0,occurences=0;
+
 	for(int i=0;i<n-m+1;i++){
 		while(j>=0){
 			steps++;
-			if(T[i+1]!=P[j+1]){
+			if(T[i]!=P[j]){
 				j=MP_next[j];
 			}else{
 				break;
@@ -66,54 +66,55 @@ int j=0,steps=0,occurences=0;
 			j=MP_next[j];
 		}
 	}
+
 	cout<<"J'ai trouve "<<occurences<<" occurences de P dans T en "<<steps<<" etapes."<<endl;
-delete [] MP_next;
+	delete [] MP_next;
 }
 
 // KMP
-int * calcule_KMP_next(string P, int m)
-{
-int* KMP_next=new int[m+1];
-int j=-1;
+int * calcule_KMP_next(string P, int m){
+	int* KMP_next=new int[m+1];
+	int j=-1;
+
 	KMP_next[0]=-1;
 	for(int i=0;i<m;i++){
-		while((j>=0)&&(P[i+1]!=P[j+1])){
+		while((j>=0)&&(P[i]!=P[j])){
 			j=KMP_next[j];
 		}
 		j++;
 		if(i>m-2){
 			KMP_next[i+1]=j;
-		}else if(P[i+2]!=P[j+1]){
+		}else if(P[i+1]!=P[j]){
 			KMP_next[i+1]=j;
 		}else{
 			KMP_next[i+1]=KMP_next[j];
 		}
 	}
-return KMP_next;
+	return KMP_next;
 }
 
 // Boyer-Moore
-int * calcule_suff(string P, int m)
-{
-int* suff = new int[m];suff[m-1] = m;
-int g = m;int f;
+int * calcule_suff(string P, int m){
+	int* suff = new int[m];suff[m-1] = m;
+	int g = m;int f;
+
 	for(int i=m-1;i>0;i--){
 		if((i>g)&&(suff[i+m-f-1]!=i-g)){
 			suff[i-1]=min(suff[i+m-f-1],i-g);
 		}else{
 			f=i;g=min(g,i);
-			while((g>0)&&(P[g]==P[g+m-f])){g--;}
+			while((g>0)&&(P[g-1]==P[g+m-f-1])){g--;}
 			suff[i-1]=f-g;
 		}
 	}
-return suff;
+	return suff;
 }
 
-int * calcule_D(string P, int m)
-{
-int* suff = calcule_suff(P,m);
-int* D = new int[m+1];fill_n(D,m,m);
-int j = 1;
+int * calcule_D(string P, int m){
+	int* suff = calcule_suff(P,m);
+	int* D = new int[m+1];fill_n(D,m,m);
+	int j = 1;
+
 	for(int i=m-1;i>=0;i--){
 		if((i==0)||(suff[i-1]==i)){
 			while(j<=m-i){
@@ -125,59 +126,60 @@ int j = 1;
 	for(int i=1;i<m;i++){
 		D[m-suff[i-1]] = m-i;
 	}
-delete [] suff;
-return D;
+	delete [] suff;
+	return D;
 }
 
-map<char,list<int> > calcule_R(string P, int m)
-{
-map<char,list<int> > table;
+map<char,list<int> > calcule_R(string P, int m){
+	map<char,list<int> > table;
+
 	for(int i=1;i<=m;i++){
-		if(table[P[i]].size()==0){
-			table[P[i]] = list<int>(1,i);
+		if(table[P[i-1]].size()==0){
+			table[P[i-1]] = list<int>(1,i);
 		}else{
-			table[P[i]].push_front(i);
+			table[P[i-1]].push_front(i);
 		}
 	}
-//for(int i=1;i<m+1;i++){
-//	list<int>::iterator it;
-//	for(it=table[P[i]].begin();it!=table[P[i]].end();it++){
-//		cout<<*it<<endl;
-//	}
-//}
-return table;
+	//for(int i=1;i<m+1;i++){
+	//	list<int>::iterator it;
+	//	for(it=table[P[i-1]].begin();it!=table[P[i-1]].end();it++){
+	//		cout<<*it<<endl;
+	//	}
+	//}
+	return table;
 }
 
-void BM(string P, int m, string T, int n, bool forte=false)
-{
-int* D=calcule_D(P,m);
-map<char,list<int> > R=calcule_R(P,m);
-int i=1, occurences=0, steps=0;
+void BM(string P, int m, string T, int n, bool forte=false){
+	int* D=calcule_D(P,m);
+	map<char,list<int> > R=calcule_R(P,m);
+	int i=1,occurences=0,steps=0;
+
 	while(i<n-m+2){
 		int j = m;
 		while(j>0){
 			steps++;
-			if(P[j]!=T[i+j-1]){break;}
+			if(P[j-1]!=T[i+j-2]){break;}
 			j--;
 		}
 		if(j==0){
-			occurences++;cout<<i<<endl;
+			occurences++;
 			i+=D[1];
 		}else{
 			if(forte){
-				list<int> k = R[T[i+j-1]];
+				list<int> k = R[T[i+j-2]];
 				list<int>::iterator it;
 				for(it=k.begin();it!=k.end();it++){
 					if(*it<j){break;}
 				}
 				i+=max(D[j],j-*it);
 			}else{
-				i+=max(D[j],j-R[T[i+j-1]].front());
+				i+=max(D[j],j-R[T[i+j-2]].front());
 			}
 		}
 	}
+
 	cout<<"J'ai trouve "<<occurences<<" occurences de P dans T en "<<steps<<" etapes."<<endl;
-delete [] D;
+	delete [] D;
 }
 
 // TVSBS
@@ -191,17 +193,17 @@ delete [] D;
 // i+1	m-i+1	: P[i]P[i+1]='ab'
 //  1	 m+1	: P[1]='b'
 //  0	 m+2
-map<unsigned short,int> calcule_biR(string P, int m)
-{
-map<unsigned short,int> table;
-list<unsigned char> pattern_alphabet = list<unsigned char>(1,0);
-list<unsigned char>::iterator it;
-unsigned char currentchar = P[1];
+map<unsigned short,int> calcule_biR(string P, int m){
+	map<unsigned short,int> table;
+	list<unsigned char> pattern_alphabet = list<unsigned char>(1,0);
+	list<unsigned char>::iterator it;
+	unsigned char currentchar = P[0];
+
 	pattern_alphabet.push_back(currentchar);
-	table[currentchar] = 1;	//P[1]='b'
+	table[currentchar] = 1;	//P[0]='b'
 	for(int i=2;i<=m;i++){
-		table[currentchar<<8|(unsigned char)P[i]] = i+1;	//P[i]P[i+1]='ab'
-		currentchar = P[i];
+		table[currentchar<<8|(unsigned char)P[i-1]] = i+1;	//P[i-1]P[i]='ab'
+		currentchar = P[i-1];
 		for(it=pattern_alphabet.begin();it!=pattern_alphabet.end();it++){
 			if(*it>currentchar){
 				pattern_alphabet.insert(it,currentchar);
@@ -212,54 +214,58 @@ unsigned char currentchar = P[1];
 		}
 	}
 	for(it=pattern_alphabet.begin();it!=pattern_alphabet.end();it++){
-		table[(currentchar<<8)|*it] = m+1;	//P[m]='a'
+		table[(currentchar<<8)|*it] = m+1;	//P[m-1]='a'
 	}
-return table;
+	return table;
 }
 
-void TVSBS(string P, int m, string T, int n)
-{
-map<unsigned short,int> R=calcule_biR(P,m);
-unsigned char currentusc;
-int i=1, occurences=0, steps=0,j; //i:premier indice de T dans fen ; j:indice dans fen
+void TVSBS(string P, int m, string T, int n){
+	map<unsigned short,int> R=calcule_biR(P,m);
+	unsigned char currentusc;
+	int i=1, occurences=0, steps=0,j; //i:premier indice de T dans fen ; j:indice dans fen
 
-while(i<n-m+2){
-	//Stage1:
-	steps++;
-	if(T[i+m-1]==P[m]){
-	steps++;
-	if(T[i]==P[1]){
-	//Stage2:
-		for(j=m-1;j>1;j--){
-			steps++;
-			if(T[i+j-1]!=P[j]){break;}
-		}if(j<2){occurences++;cout<<i<<endl;}
-	}}
-	//Stage3:
-	steps++;
-	if(i>n-m){i++;}else{if(i==n-m){currentusc=0;}else{currentusc=(unsigned char)T[i+m+1];}//gestion de fin de chaine
-	int k = m+2-max(R[(unsigned char)T[i+m]<<8|currentusc],R[currentusc]);cout<<k<<endl;i += k;}
+	while(i<n-m+2){
+		//Stage1:
+		steps++;
+		if(T[i+m-2]==P[m-1]){
+		steps++;
+		if(T[i-1]==P[0]){
+		//Stage2:
+			for(j=m-1;j>1;j--){
+				steps++;
+				if(T[i+j-2]!=P[j-1]){break;}
+			}
+			if(j<2){occurences++;cout<<i<<endl;}
+		}}
+		//Stage3:
+		steps++;
+		if(i>n-m){i++;}else{if(i==n-m){currentusc=0;}else{currentusc=(unsigned char)T[i+m];}//gestion de fin de chaine
+		int k = m+2-max(R[(unsigned char)T[i+m-1]<<8|currentusc],R[currentusc]);i += k;}//cout<<k<<endl;}
+	}
+
+	cout<<"J'ai trouve "<<occurences<<" occurences de P dans T en "<<steps<<" etapes."<<endl;
 }
-cout<<"J'ai trouve "<<occurences<<" occurences de P dans T en "<<steps<<" etapes."<<endl;
-}
-*/
+
 
 // multi-motifs
-void recherche_multi(list<string> P, string T){
+void recherche_multi(list<string> P, string T,bool echecsameliores = false){
+	list<int> occurences[P.size()];
 	Arbre* tree = new Arbre(P);
 	Noeud* racine = (*tree).getRacine();
 	Noeud* noeudcourant = racine;
 	Noeud* noeudsuivant;
-	int i = 0;
-	(*tree).calculeErreur();
+	int i=0,steps=0;
+	(*tree).calculeErreur(echecsameliores);
 
-	(*tree).afficheArbre(noeudcourant);cout<<endl;
+	// (*tree).afficheArbre(noeudcourant);cout<<endl;
 	while(i<T.size()){
+		steps++;
 		noeudsuivant = (*noeudcourant).trouveFils(T[i]);
 		if(!noeudsuivant){
 			if(noeudcourant!=racine){
 				if((*noeudcourant).estFinMotif()){
-					cout<<"Occurence du motif "<<(*noeudcourant).quelMotif()<<" a la position de fin "<<i<<endl;
+					occurences[(*noeudcourant).quelMotif()].push_back(i);
+//					cout<<"Occurence du motif "<<(*noeudcourant).quelMotif()<<" a la position de fin "<<i<<endl;
 				}
 				i--;
 			}
@@ -268,34 +274,66 @@ void recherche_multi(list<string> P, string T){
 		noeudcourant = noeudsuivant;
 		i++;
 	}
+
 	delete(tree);
+	list<string>::iterator mot = P.begin();
+	list<int> motif;
+	for(i=0;i<P.size();i++){
+		motif = occurences[i];
+		if(motif.size()>0){
+			cout<<motif.size()<<" occurences du motif "<<i<<" :";
+			for(list<int>::iterator it=motif.begin();it!=motif.end();it++){
+				cout<<" "<<*it-(*mot).size()<<",";
+			}
+			cout<<endl;
+		}
+		mot++;
+	}
+	cout<<"Steps = "<<steps<<endl;
 }
 void recherche_multi_naif(list<string> P, string T){
+	list<int> occurences[P.size()];
 	Arbre* tree = new Arbre(P);
 	Noeud* noeudcourant;
 	Noeud* noeudsuivant = (*tree).getRacine();
-	int j,i=0;
+	int j,i=0,steps=0;
 
 	while(i<T.size()){
 		j = 0;
 		while(noeudsuivant){
 			noeudcourant = noeudsuivant;
 			if(i+j>=T.size()){break;}
+			steps++;
 			noeudsuivant = (*noeudcourant).trouveFils(T[i+j]);
 			j++;
 		}
 		if((*noeudcourant).estFinMotif()){
-			cout<<"Occurence du motif "<<(*noeudcourant).quelMotif()<<" a la position de fin "<<i+j<<endl;
+			occurences[(*noeudcourant).quelMotif()].push_back(i+j-1);
 		}
 		noeudsuivant = (*tree).getRacine();
 		i++;
 	}
+
 	delete(tree);
+	list<string>::iterator mot = P.begin();
+	list<int> motif;
+	for(i=0;i<P.size();i++){
+		motif = occurences[i];
+		if(motif.size()>0){
+			cout<<motif.size()<<" occurences du motif "<<i<<" :";
+			for(list<int>::iterator it=motif.begin();it!=motif.end();it++){
+				cout<<" "<<*it-(*mot).size()<<",";
+			}
+			cout<<endl;
+		}
+		mot++;
+	}
+	cout<<"Steps = "<<steps<<endl;
 }
 
 ///////////////////////////////////////
 int main(int argc, char** argv){
-if(argc != 3){
+if(argc < 3){
 	cout<<"Mauvaise utilisation du programme "<<argv[0]<<", on attend : "<<argv[0]<<" ficMotif ficTexte"<<endl;
 }else{
 	string line;
@@ -330,33 +368,35 @@ if(argc != 3){
 	cout<<"Dans un texte de taille "<<n<<endl;
 	cout<<"********************************************************************"<<endl<<endl;
 
-/*
-	cout<<"************ Recherche naive *************"<<endl;
-	naif(P.front(),m,T,n);
-	cout<<"##########################################"<<endl<<endl;
+	if(argc > 3){
+		cout<<"************ Recherche naive *************"<<endl;
+		naif(P.front(),m,T,n);
+		cout<<"##########################################"<<endl<<endl;
 
-	cout<<"*********** Recherche avec MP ************"<<endl;
-	MP(P.front(),m,T,n,calcule_MP_next(P,m));
-	cout<<"##########################################"<<endl<<endl;
+		cout<<"*********** Recherche avec MP ************"<<endl;
+		MP(P.front(),m,T,n,calcule_MP_next(P.front(),m));
+		cout<<"##########################################"<<endl<<endl;
 
-	cout<<"*********** Recherche avec KMP ***********"<<endl;
-	MP(P.front(),m,T,n,calcule_KMP_next(P,m));
-	cout<<"##########################################"<<endl<<endl;
+		cout<<"*********** Recherche avec KMP ***********"<<endl;
+		MP(P.front(),m,T,n,calcule_KMP_next(P.front(),m));
+		cout<<"##########################################"<<endl<<endl;
 
-	cout<<"******* Recherche avec Boyer-Moore *******"<<endl;
-	BM(P.front(),m,T,n);
-	cout<<"** Recherche avec Boyer-Moore (R forte) **"<<endl;
-	BM(P.front(),m,T,n,true);
-	cout<<"##########################################"<<endl<<endl;
+		cout<<"******* Recherche avec Boyer-Moore *******"<<endl;
+		BM(P.front(),m,T,n);
+		cout<<"** Recherche avec Boyer-Moore (R forte) **"<<endl;
+		BM(P.front(),m,T,n,true);
+		cout<<"##########################################"<<endl<<endl;
 
-	cout<<"********** Recherche avec TVSBS **********"<<endl;
-	TVSBS(P.front(),m,T,n);
-	cout<<"##########################################"<<endl;
-*/
+		cout<<"********** Recherche avec TVSBS **********"<<endl;
+		TVSBS(P.front(),m,T,n);
+		cout<<"##########################################"<<endl<<endl;
+	}
 
-//	cout<<"****** Recherche naive multi-motifs ******"<<endl;
-//	recherche_multi_naif(P,T);
+	cout<<"****** Recherche naive multi-motifs ******"<<endl;
+	recherche_multi_naif(P,T);
 	cout<<"********* Recherche multi-motifs *********"<<endl;
 	recherche_multi(P,T);
+	cout<<"**** Recherche multi-motifs amelioree ****"<<endl;
+	recherche_multi(P,T,true);
 	cout<<"##########################################"<<endl;
 }}

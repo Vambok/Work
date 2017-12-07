@@ -11,11 +11,17 @@ class Arbre{
 	int nextIndice;
 public:
 	Arbre(){racine = new Noeud;nextIndice = 0;}
+/*	Arbre(std::string texte){
+		racine = new Noeud;
+		nextIndice = 0;
+		for(int i=0;i<texte.size();i++){ajoutMot(texte.substr(i,texte.size()-i));}
+		suffixize(racine);
+	}
+*/
 	Arbre(std::list<std::string> tabMotifs){
 		racine = new Noeud;
 		nextIndice = 0;
-		std::list<std::string>::iterator it;
-		for(it=tabMotifs.begin();it!=tabMotifs.end();it++){ajoutMot(*it);}
+		for(std::list<std::string>::iterator it=tabMotifs.begin();it!=tabMotifs.end();it++){ajoutMot(*it);}
 	}
 	~Arbre(){delete racine;}
 	Noeud* getRacine(){return racine;}
@@ -29,8 +35,10 @@ public:
 
 	Noeud* trouveMotAdv(std::string s);
 	void calculeErreur();
+	void calculeErreur(bool amelioree);
 	std::string recherchePref(std::string s);
 	void afficheArbre(Noeud* noeud);
+//	void suffixize(Noeud* noeud);
 };
 
 #endif

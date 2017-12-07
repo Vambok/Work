@@ -75,31 +75,44 @@ void Arbre::supprMot(string s){
 	}
 }
 
-void Arbre::calculeErreur(){
-	queue<pair<Noeud*,string> > todo;
-	todo.push(pair<Noeud*,string>(racine,""));
+void Arbre::calculeErreur(){calculeErreur(false);}
+void Arbre::calculeErreur(bool amelioree){
+	queue<Noeud*> todo;
+	todo.push(racine);
 	Noeud* noeudcourant;
-	Noeud* noeudcible;
-	string motcourant;
-	string motcible;
+	Noeud* noeudcible = NULL;
 	vector<Noeud*> fils;
 
 	while(!todo.empty()){
-		noeudcourant = todo.front().first;
-		motcourant = todo.front().second;
-//		for(it=(*noeudcourant).lesFils().begin();it!=(*noeudcourant).lesFils().end();it++){
+		noeudcourant = todo.front();
 		fils = (*noeudcourant).lesFils();
 		for(int i=0;i<fils.size();i++){
-			motcible = motcourant+(*fils[i]).getLabel();
-			todo.push(pair<Noeud*,string>(fils[i],motcible));
-			for(int j=1;j<motcible.size();j++){
-				noeudcible = trouveMotAdv(motcible.substr(j,motcible.size()-j));
-				if(noeudcible){break;}
+			todo.push(fils[i]);
+			noeudcible = noeudcourant;
+			while(noeudcible!=racine){
+				noeudcible = (*noeudcible).getEchec();
+				if((*noeudcible).trouveFils((*fils[i]).getLabel())){
+					noeudcible = (*noeudcible).trouveFils((*fils[i]).getLabel());
+					if(amelioree){ //liens d'echec ameliores
+						while(noeudcible!=racine){
+							int k;for(k=(*noeudcible).lesFils().size()-1;k>-1;k--){
+								if((*fils[i]).trouveFils((*((*noeudcible).lesFils())[k]).getLabel())==NULL){
+									k = -1; //<=> break 2; si la cible a un fils qu'on n'a pas car le LE est optimal
+								}
+							}
+							if(k<-1){break;
+							}else{ //si tout echec sur soi est aussi un echec sur la cible
+								if(!(*fils[i]).estFinMotif()&&(*noeudcible).estFinMotif()){
+									(*fils[i]).setFinMotif((*noeudcible).quelMotif()); //heritage du motif eventuel
+								}
+								noeudcible=(*noeudcible).getEchec(); //passage au LE suivant
+							}
+						}
+					}
+					break;
+				}
 			}
-			if(noeudcible){
-				(*fils[i]).setEchec(noeudcible);
-				noeudcible = NULL;
-			}else{(*fils[i]).setEchec(racine);}
+			(*fils[i]).setEchec(noeudcible);
 		}
 		todo.pop();
 	}
@@ -129,3 +142,24 @@ string Arbre::recherchePref(string s){
 	}
 	return s.substr(0,i);
 }
+
+/*int lafter int minmotif suffixize(Noeud* pere,int lbefore){
+	vector<Noeud*> fils = (*pere).lesFils();
+	pair<int> interval;
+
+	if(fils.size()<1){
+		interval = pair<int>(1,(*pere).quelMotif());
+		(*pere).interval = pair<int>(lbefore+interval.second,lbefore+interval.second);
+		return interval;
+	}else if(fils.size()==1){
+		interval = suffixize(fils[0],lbefore+1);
+		(*pere).interval = pair<int>(lbefore+interval.second,lbefore+interval.second+interval.first);
+		interval.first++;
+		return interval;
+	}else{
+		for(int i=0;i<fils.size();i++){
+			suffixize(fils[i]);
+		}
+	}
+	return s.substr(0,i);
+}*/
