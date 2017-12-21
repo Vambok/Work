@@ -9,8 +9,9 @@
 class Arbre{
 	Noeud* racine;
 	int nextIndice;
+	int steptime;
 public:
-	Arbre(){racine = new Noeud;nextIndice = 0;}
+	Arbre(){racine = new Noeud;nextIndice = 0;steptime = 5;}
 /*	Arbre(std::string texte){
 		racine = new Noeud;
 		nextIndice = 0;
@@ -21,10 +22,12 @@ public:
 	Arbre(std::list<std::string> tabMotifs){
 		racine = new Noeud;
 		nextIndice = 0;
-		for(std::list<std::string>::iterator it=tabMotifs.begin();it!=tabMotifs.end();it++){ajoutMot(*it);}
+		steptime = 8;
+		for(std::list<std::string>::iterator it=tabMotifs.begin();it!=tabMotifs.end();it++){ajoutMot(*it);steptime+=2;}
 	}
 	~Arbre(){delete racine;}
-	Noeud* getRacine(){return racine;}
+	Noeud* getRacine(){steptime++;return racine;}
+	int getTime(){int buffer=steptime;steptime=0;return buffer;}
 
 //INDEFINIS :
 	void ajoutMot(std::string s);
