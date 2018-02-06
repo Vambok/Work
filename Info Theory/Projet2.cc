@@ -1,5 +1,6 @@
-//> g++ Projet.cc -std=c++11 -o Projet
-//> ./Projet Rchaine
+//> g++ Projet2.cc -std=c++11 -o Projet2
+//> ./Projet2 Rchaine
+//> ./Projet2 Pchaine
 
 #include <iostream>
 #include <fstream> //pour lire les fichiers
