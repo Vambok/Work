@@ -77,36 +77,40 @@ pair<string,int> prog(string P, int tempg=0, int tempd=0, int idf=1){
 	switch(P[0]){
 		case 'U':case '7':
 			ari = arite(P.substr(1),true);
-			chaine = "int f"+idf+"( ";
+			chaine = "int f"+to_string(idf)+"( ";
 			for(i=0;i<tempg;i++){
-				chaine += "int xg"+i+",";
+				chaine += "int xg"+to_string(i)+",";
 			}
 			for(i=0;i<ari.first-1;i++){
-				chaine += "int x"+i+",";
-				suitechaine += ",x"+i;
+				chaine += "int x"+to_string(i)+",";
+				suitechaine += ",x"+to_string(i);
 			}
 			for(i=0;i<tempd;i++){
-				chaine += "int xd"+i+",";
+				chaine += "int xd"+to_string(i)+",";
 			}
-			chaine = chaine.substr(0,chaine.size()-1) + "){int i=0;while(f"+(idf*2)+"(i"+suitechaine+")!=0){i++;}return i;}";
+			chaine = chaine.substr(0,chaine.size()-1) + "){int i=0;while(f"+to_string(idf*2)+"(i"+suitechaine+")!=0){i++;}return i;}";
 			fonct = prog(P.substr(1),0,0,idf*2);
 			fonct.first += chaine;
 			break;
 		case 'R':case '6':{
+			string vargauche = "";
+			string vardroite = "";
 			ari = arite(P.substr(1),true);
-			chaine = "int f"+idf+"(";
+			chaine = "int f"+to_string(idf)+"(";
 			for(i=0;i<tempg;i++){
-				chaine += "int xg"+i+",";
+				chaine += "int xg"+to_string(i)+",";
+				vargauche += "xg"+to_string(i)+",";
 			}
 			for(i=0;i<ari.first+1;i++){
-				chaine += "int x"+i+",";
-				suitechaine += ",x"+i;
+				chaine += "int x"+to_string(i)+",";
+				suitechaine += ",x"+to_string(i);
 			}
 			for(i=0;i<tempd;i++){
-				chaine += "int xd"+i+",";
+				chaine += "int xd"+to_string(i)+",";
+				vardroite += ",xd"+to_string(i);
 			}
 			suitechaine += " ";
-			chaine = chaine.substr(0,chaine.size()-1) + "){if(x0==0){return f"+(idf*2)+"("+suitechaine.substr(4)+");}else{return f"+(idf*2+1)+"(x0-1,f"+idf+"(x0-1"+suitechaine.substr(3)+")"+suitechaine.substr(3)+");}}";
+			chaine = chaine.substr(0,chaine.size()-1) + "){if(x0==0){return f"+to_string(idf*2)+"("+suitechaine.substr(4)+");}else{return f"+to_string(idf*2+1)+"(x0-1,f"+to_string(idf)+"("+vargauche+"x0-1"+suitechaine.substr(3)+vardroite+")"+suitechaine.substr(3)+");}}";
 			fonct = prog(P.substr(ari.second+1),0,0,idf*2+1);
 			chaine = fonct.first + chaine;
 			j = fonct.second;
@@ -117,21 +121,21 @@ pair<string,int> prog(string P, int tempg=0, int tempd=0, int idf=1){
 		case 'C':case '5':{
 			ari = arite(P.substr(1),true);
 			pair<int,int> ari2 = arite(P.substr(ari.second+1),true);
-			chaine = "int f"+idf+"( ";
+			chaine = "int f"+to_string(idf)+"( ";
 			for(i=0;i<tempg;i++){
-				chaine += "int xg"+i+",";
+				chaine += "int xg"+to_string(i)+",";
 			}
 			for(i=0;i<ari2.first;i++){
-				chaine += "int x"+i+",";
-				suitechaine += ",x"+i;
+				chaine += "int x"+to_string(i)+",";
+				suitechaine += ",x"+to_string(i);
 			}
 			for(i=0;i<tempd;i++){
-				chaine += "int xd"+i+",";
+				chaine += "int xd"+to_string(i)+",";
 			}
 			suitechaine += " ";
-			chaine = chaine.substr(0,chaine.size()-1) + "){return f"+(idf*(ari.first+1))+"(";
+			chaine = chaine.substr(0,chaine.size()-1) + "){return f"+to_string(idf*(ari.first+1))+"(";
 			for(i=0;i<ari.first;i++){
-				chaine += "f"+(idf*(ari.first+1)+i+1)+"("+suitechaine.substr(1)+"),";
+				chaine += "f"+to_string(idf*(ari.first+1)+i+1)+"("+suitechaine.substr(1)+"),";
 			}
 			chaine = chaine.substr(0,chaine.size()-1) + ");}";
 			fonct = prog(P.substr(1),0,0,idf*(ari.first+1));
@@ -153,34 +157,34 @@ pair<string,int> prog(string P, int tempg=0, int tempd=0, int idf=1){
 			fonct = prog(P.substr(1),tempg+1,tempd,idf);
 			break;
 		case 'S':case '2':
-			chaine = "int f"+idf+"( ";
+			chaine = "int f"+to_string(idf)+"( ";
 			for(i=0;i<tempg;i++){
-				chaine += "int xg"+i+",";
+				chaine += "int xg"+to_string(i)+",";
 			}
 			chaine += "int x0,";
 			for(i=0;i<tempd;i++){
-				chaine += "int xd"+i+",";
+				chaine += "int xd"+to_string(i)+",";
 			}
 			fonct = pair<string,int>(chaine.substr(0,chaine.size()-1) + "){return x0+1;}",0);
 			break;
 		case 'I':case '1':
-			chaine = "int f"+idf+"( ";
+			chaine = "int f"+to_string(idf)+"( ";
 			for(i=0;i<tempg;i++){
-				chaine += "int xg"+i+",";
+				chaine += "int xg"+to_string(i)+",";
 			}
 			chaine += "int x0,";
 			for(i=0;i<tempd;i++){
-				chaine += "int xd"+i+",";
+				chaine += "int xd"+to_string(i)+",";
 			}
 			fonct = pair<string,int>(chaine.substr(0,chaine.size()-1) + "){return x0;}",0);
 			break;
 		default:
-			chaine = "int f"+idf+"( ";
+			chaine = "int f"+to_string(idf)+"( ";
 			for(i=0;i<tempg;i++){
-				chaine += "int xg"+i+",";
+				chaine += "int xg"+to_string(i)+",";
 			}
 			for(i=0;i<tempd;i++){
-				chaine += "int xd"+i+",";
+				chaine += "int xd"+to_string(i)+",";
 			}
 			fonct = pair<string,int>(chaine.substr(0,chaine.size()-1) + "){return 0;}",0);
 	}
@@ -335,7 +339,7 @@ int main(int argc, char** argv){
 			ifstream IfFicChaine(input.c_str(),ios::in);
 			if(!IfFicChaine){cout<<endl<<"Impossible d'ouvrir le fichier : "<<input<<endl;return(0);}
 			IfFicChaine>>input;
-			cout<<"Chaine de jetons n°0"<<tokenstochaine(input)<<" : "<<input<<endl;
+			cout<<"Chaine de jetons n°0"<<tokenstochaine(input)<<endl;//" : "<<input<<endl;
 			pair<int,int> ari = arite(input);
 			if(ari.first>-1){
 				if(ari.second<input.size()){cout<<"Sans les "<<input.size()-ari.second<<" derniers caracteres inutiles on a : ";}
@@ -343,24 +347,43 @@ int main(int argc, char** argv){
 			}
 			break;}
 		case 'P':{
+			string nomfichier;
 			if(input.size()==1){
 				cout<<"Entrez le nom du fichier contenant la chaine a programmer : ";
-				getline(cin,input);
+				getline(cin,nomfichier);
 			}else{
-				input = input.substr(1);
+				nomfichier = input.substr(1);
 			}
-			ifstream IfFicChaine(input.c_str(),ios::in);
-			if(!IfFicChaine){cout<<endl<<"Impossible d'ouvrir le fichier : "<<input<<endl;return(0);}
+			ifstream IfFicChaine(nomfichier.c_str(),ios::in);
+			if(!IfFicChaine){cout<<endl<<"Impossible d'ouvrir le fichier : "<<nomfichier<<endl;return(0);}
 			IfFicChaine>>input;
-			cout<<"Chaine de jetons n°0"<<tokenstochaine(input)<<" : "<<input<<endl;
-			pair<string,int> fonct = prog(input);
-			ofstream myfile("output.txt");
-			if(myfile.is_open()){
-				myfile<<fonct.first;
-				myfile.close();
-				cout<<"Programme cree dans output.txt !"<<endl;
-				if(fonct.second<input.size()){cout<<input.size()-fonct.second<<" caracteres inutiles a la fin."<<endl;}
-			}else{cout<<"Unable to open file";}
+			nomfichier = "p_" + nomfichier;
+			cout<<"Chaine de jetons n°0"<<tokenstochaine(input);//<<" : "<<input;
+			pair<int,int> ari = arite(input);
+			if(ari.first>-1){
+				if(ari.second<input.size()){cout<<" ("<<input.size()-ari.second<<" caracteres ignores en fin de chaine)";}
+				pair<string,int> fonct = prog(input);
+				ofstream myfile(nomfichier+".cc");
+				if(myfile.is_open()){
+					myfile<<"#include <iostream>\n#include <stdlib.h>\nusing namespace std;"<<fonct.first<<"int main(int argc,char** argv){if(argc<1+"<<ari.first<<"){cout<<\"Vous devez entrer "<<ari.first<<" arguments entiers !\"<<endl;}else{cout<<\"= \"<<f1(";
+					string arguments = "";
+					for(int i=0;i<ari.first;i++){
+						arguments += ",atoi(argv["+to_string(i+1)+"])";
+					}
+					arguments += " ";
+					myfile<<arguments.substr(1)<<")<<endl;}}";
+					myfile.close();
+					system(("g++ "+nomfichier+".cc -o "+nomfichier).c_str());
+					cout<<endl<<"Programme cree ! "<<endl;
+					if(argc>1+ari.first){
+						arguments = "./"+nomfichier;
+						for(int i=0;i<ari.first;i++){
+							arguments += " "+string(argv[i+2]);
+						}
+						system(arguments.c_str());
+					}
+				}
+			}
 			break;}
 		case 'd':
 			if(input[1]=='n'){
