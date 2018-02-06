@@ -1,0 +1,3 @@
+#include <iostream>
+#include <stdlib.h>
+using namespace std;int f2( int xg0){return 0;}int f6( int x0){return x0;}int f7( int xg0,int x0,int xd0){return x0+1;}int f3(int xg0,int x0,int x1){if(x0==0){return f6(x1 );}else{return f7(x0-1,f3(xg0,x0-1,x1 ),x1 );}}int f1(int x0,int x1){if(x0==0){return f2(x1 );}else{return f3(x0-1,f1(x0-1,x1 ),x1 );}}int main(int argc,char** argv){if(argc<1+2){cout<<"Vous devez entrer 2 arguments entiers !"<<endl;}else{cout<<"= "<<f1(atoi(argv[1]),atoi(argv[2]) )<<endl;}}
